@@ -85,7 +85,7 @@ def post_wall_photo_vk(vk_token, owner_id, media_id, comment):
         'message': comment,
         'v': 5.131,
     }
-    response = requests.post(post_wall_photo_url, headers=HEADERS, params=params)
+    requests.post(post_wall_photo_url, headers=HEADERS, params=params)
 
 
 if __name__ == '__main__':
