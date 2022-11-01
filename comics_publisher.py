@@ -1,5 +1,6 @@
 import os
 import random
+
 import requests as requests
 from dotenv import load_dotenv
 
@@ -20,13 +21,17 @@ def load_image_and_comment():
     url = get_random_img_url()
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
-    comment = response.json().get('alt')
+    comic_comment = response.json().get('alt')
     comic_img_url = response.json().get('img')
     response = requests.get(comic_img_url, headers=HEADERS)
     response.raise_for_status()
     with open('comic_img.png', 'wb') as file:
         file.write(response.content)
-    return comment
+    return comic_comment
+
+
+def delete_image_from_pc():
+    os.remove('comic_img.png')
 
 
 def get_wall_upload_server_vk(vk_token):
@@ -91,5 +96,5 @@ if __name__ == '__main__':
     photo, hash, server = load_photo_to_server_vk(upload_server)
     owner_id, media_id = save_wall_photo_vk(vk_token, photo, hash, server)
     post_wall_photo_vk(vk_token, owner_id, media_id, comment)
-
+    delete_image_from_pc()
 
