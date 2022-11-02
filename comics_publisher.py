@@ -5,7 +5,7 @@ import requests as requests
 from dotenv import load_dotenv
 
 
-def get_random_img_url():
+def get_random_comics_url():
     xkcd_url = 'https://xkcd.com/info.0.json'
     response = requests.get(xkcd_url)
     total_photos = response.json().get('num')
@@ -13,8 +13,8 @@ def get_random_img_url():
     return f'https://xkcd.com/{rand_num}/info.0.json'
 
 
-def load_image_and_comment():
-    url = get_random_img_url()
+def download_comics():
+    url = get_random_comics_url()
     response = requests.get(url)
     response.raise_for_status()
     comic_comment = response.json().get('alt')
@@ -42,7 +42,7 @@ def get_wall_upload_server_vk(vk_token):
     return upload_url
 
 
-def load_photo_to_server_vk(upload_url):
+def upload_photo_to_server_vk(upload_url):
     with open('comic_img.png', 'rb') as file:
         url = upload_url
         files = {
@@ -87,9 +87,9 @@ def post_wall_photo_vk(vk_token, owner_id, media_id, comment):
 if __name__ == '__main__':
     load_dotenv()
     vk_token = os.environ.get('VK_TOKEN')
-    comment = load_image_and_comment()
+    comment = download_comics()
     upload_server = get_wall_upload_server_vk(vk_token)
-    photo, hash, server = load_photo_to_server_vk(upload_server)
+    photo, hash, server = upload_photo_to_server_vk(upload_server)
     owner_id, media_id = save_wall_photo_vk(vk_token, photo, hash, server)
     post_wall_photo_vk(vk_token, owner_id, media_id, comment)
     delete_image_from_pc()
