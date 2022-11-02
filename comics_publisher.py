@@ -17,8 +17,9 @@ def download_comics():
     url = get_random_comics_url()
     response = requests.get(url)
     response.raise_for_status()
-    comic_comment = response.json().get('alt')
-    comic_img_url = response.json().get('img')
+    response = response.json()
+    comic_comment = response.get('alt')
+    comic_img_url = response.get('img')
     response = requests.get(comic_img_url)
     response.raise_for_status()
     with open('comic_img.png', 'wb') as file:
@@ -46,9 +47,10 @@ def upload_photo_to_server_vk(upload_url):
         }
         response = requests.post(url, files=files)
         response.raise_for_status()
-    photo = response.json().get('photo')
-    hash = response.json().get('hash')
-    server = response.json().get('server')
+    response = response.json()
+    photo = response.get('photo')
+    hash = response.get('hash')
+    server = response.get('server')
     return photo, hash, server
 
 
@@ -62,8 +64,9 @@ def save_wall_photo_vk(vk_token, photo, hash, server):
         'v': 5.131,
     }
     response = requests.post(save_wall_photo_url, params=params)
-    owner_id = response.json().get('response')[0].get('owner_id')
-    media_id = response.json().get('response')[0].get('id')
+    response = response.json()
+    owner_id = response.get('response')[0].get('owner_id')
+    media_id = response.get('response')[0].get('id')
     return owner_id, media_id
 
 
