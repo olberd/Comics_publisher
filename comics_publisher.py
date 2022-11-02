@@ -49,17 +49,17 @@ def upload_photo_to_server_vk(upload_url):
     response.raise_for_status()
     response = response.json()
     photo = response.get('photo')
-    hash = response.get('hash')
+    photo_hash = response.get('hash')
     server = response.get('server')
-    return photo, hash, server
+    return photo, photo_hash, server
 
 
-def save_wall_photo_vk(vk_token, photo, hash, server):
+def save_wall_photo_vk(vk_token, photo, photo_hash, server):
     save_wall_photo_url = 'https://api.vk.com/method/photos.saveWallPhoto'
     params = {
         'access_token': vk_token,
         'photo': photo,
-        'hash': hash,
+        'hash': photo_hash,
         'server': server,
         'v': 5.131,
     }
@@ -88,8 +88,8 @@ if __name__ == '__main__':
     vk_token = os.environ.get('VK_TOKEN')
     comment = download_comics()
     upload_server = get_wall_upload_server_vk(vk_token)
-    photo, hash, server = upload_photo_to_server_vk(upload_server)
-    owner_id, media_id = save_wall_photo_vk(vk_token, photo, hash, server)
+    photo, photo_hash, server = upload_photo_to_server_vk(upload_server)
+    owner_id, media_id = save_wall_photo_vk(vk_token, photo, photo_hash, server)
     post_wall_photo_vk(vk_token, owner_id, media_id, comment)
     os.remove('comic_img.png')
 
