@@ -84,7 +84,6 @@ def post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment):
     }
     response = requests.post(post_wall_photo_url, params=params)
     response.raise_for_status()
-    print(response.json(), owner_id, group_id)
 
 
 if __name__ == '__main__':
