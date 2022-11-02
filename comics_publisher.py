@@ -29,6 +29,14 @@ def download_comics():
     return comic_comment
 
 
+def handle_http_error(response):
+    if 'error' in response:
+        raise requests.HTTPError(
+            response.get('error').get('error_code'),
+            response.get('error').get('error_msg'),
+        )
+
+
 def get_wall_upload_server_vk(vk_token):
     wall_upload_server_url = 'https://api.vk.com/method/photos.getWallUploadServer'
     params = {
@@ -37,7 +45,9 @@ def get_wall_upload_server_vk(vk_token):
     }
     response = requests.get(wall_upload_server_url, params=params)
     response.raise_for_status()
-    upload_url = response.json().get('response').get('upload_url')
+    response = response.json()
+    handle_http_error(response)
+    upload_url = response.get('response').get('upload_url')
     return upload_url
 
 
@@ -50,6 +60,7 @@ def upload_photo_to_server_vk(upload_url):
         response = requests.post(url, files=files)
     response.raise_for_status()
     response = response.json()
+    handle_http_error(response)
     photo = response.get('photo')
     photo_hash = response.get('hash')
     server = response.get('server')
@@ -68,6 +79,7 @@ def save_wall_photo_vk(vk_token, photo, photo_hash, server):
     response = requests.post(save_wall_photo_url, params=params)
     response.raise_for_status()
     response = response.json()
+    handle_http_error(response)
     owner_id = response.get('response')[0].get('owner_id')
     media_id = response.get('response')[0].get('id')
     return owner_id, media_id
@@ -85,6 +97,8 @@ def post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment):
     }
     response = requests.post(post_wall_photo_url, params=params)
     response.raise_for_status()
+    response = response.json()
+    handle_http_error(response)
 
 
 if __name__ == '__main__':
