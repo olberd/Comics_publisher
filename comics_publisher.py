@@ -25,6 +25,7 @@ def download_comics():
     response.raise_for_status()
     with open('comic_img.png', 'wb') as file:
         file.write(response.content)
+    # raise ValueError
     return comic_comment
 
 
@@ -90,10 +91,12 @@ if __name__ == '__main__':
     load_dotenv()
     vk_token = os.environ.get('VK_TOKEN')
     group_id = os.environ.get('VK_GROUP_ID')
-    comment = download_comics()
-    upload_server = get_wall_upload_server_vk(vk_token)
-    photo, photo_hash, server = upload_photo_to_server_vk(upload_server)
-    owner_id, media_id = save_wall_photo_vk(vk_token, photo, photo_hash, server)
-    post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment)
-    os.remove('comic_img.png')
+    try:
+        comment = download_comics()
+        upload_server = get_wall_upload_server_vk(vk_token)
+        photo, photo_hash, server = upload_photo_to_server_vk(upload_server)
+        owner_id, media_id = save_wall_photo_vk(vk_token, photo, photo_hash, server)
+        post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment)
+    finally:
+        os.remove('comic_img.png')
 
