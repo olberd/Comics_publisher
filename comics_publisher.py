@@ -26,10 +26,6 @@ def download_comics():
     return comic_comment
 
 
-def delete_image_from_pc():
-    os.remove('comic_img.png')
-
-
 def get_wall_upload_server_vk(vk_token):
     wall_upload_server_url = 'https://api.vk.com/method/photos.getWallUploadServer'
     params = {
@@ -92,5 +88,5 @@ if __name__ == '__main__':
     photo, hash, server = upload_photo_to_server_vk(upload_server)
     owner_id, media_id = save_wall_photo_vk(vk_token, photo, hash, server)
     post_wall_photo_vk(vk_token, owner_id, media_id, comment)
-    delete_image_from_pc()
+    os.remove('comic_img.png')
 
