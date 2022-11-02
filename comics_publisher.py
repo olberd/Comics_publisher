@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 def get_random_comics_url():
     xkcd_url = 'https://xkcd.com/info.0.json'
     response = requests.get(xkcd_url)
+    response.raise_for_status()
     total_photos = response.json().get('num')
     rand_num = random.randint(1, total_photos)
     return f'https://xkcd.com/{rand_num}/info.0.json'
@@ -64,6 +65,7 @@ def save_wall_photo_vk(vk_token, photo, photo_hash, server):
         'v': 5.131,
     }
     response = requests.post(save_wall_photo_url, params=params)
+    response.raise_for_status()
     response = response.json()
     owner_id = response.get('response')[0].get('owner_id')
     media_id = response.get('response')[0].get('id')
@@ -80,7 +82,8 @@ def post_wall_photo_vk(vk_token, owner_id, media_id, comment):
         'message': comment,
         'v': 5.131,
     }
-    requests.post(post_wall_photo_url, params=params)
+    response = requests.post(post_wall_photo_url, params=params)
+    response.raise_for_status()
 
 
 if __name__ == '__main__':
