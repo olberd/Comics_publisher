@@ -72,27 +72,29 @@ def save_wall_photo_vk(vk_token, photo, photo_hash, server):
     return owner_id, media_id
 
 
-def post_wall_photo_vk(vk_token, owner_id, media_id, comment):
+def post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment):
     post_wall_photo_url = 'https://api.vk.com/method/wall.post'
     params = {
         'access_token': vk_token,
-        'owner_id': '-216897029',
-        'from_group': '216897029',
+        'owner_id': f'-{group_id}',
+        'from_group': group_id,
         'attachments': f'photo{owner_id}_{media_id}',
         'message': comment,
         'v': 5.131,
     }
     response = requests.post(post_wall_photo_url, params=params)
     response.raise_for_status()
+    print(response.json(), owner_id, group_id)
 
 
 if __name__ == '__main__':
     load_dotenv()
     vk_token = os.environ.get('VK_TOKEN')
+    group_id = os.environ.get('VK_GROUP_ID')
     comment = download_comics()
     upload_server = get_wall_upload_server_vk(vk_token)
     photo, photo_hash, server = upload_photo_to_server_vk(upload_server)
     owner_id, media_id = save_wall_photo_vk(vk_token, photo, photo_hash, server)
-    post_wall_photo_vk(vk_token, owner_id, media_id, comment)
+    post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment)
     os.remove('comic_img.png')
 
