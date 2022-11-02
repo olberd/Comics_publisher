@@ -5,13 +5,9 @@ import requests as requests
 from dotenv import load_dotenv
 
 
-HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                         'Chrome/104.0.0.0 Safari/537.36'}
-
-
 def get_random_img_url():
     xkcd_url = 'https://xkcd.com/info.0.json'
-    response = requests.get(xkcd_url, headers=HEADERS)
+    response = requests.get(xkcd_url)
     total_photos = response.json().get('num')
     rand_num = random.randint(1, total_photos)
     return f'https://xkcd.com/{rand_num}/info.0.json'
@@ -19,11 +15,11 @@ def get_random_img_url():
 
 def load_image_and_comment():
     url = get_random_img_url()
-    response = requests.get(url, headers=HEADERS)
+    response = requests.get(url)
     response.raise_for_status()
     comic_comment = response.json().get('alt')
     comic_img_url = response.json().get('img')
-    response = requests.get(comic_img_url, headers=HEADERS)
+    response = requests.get(comic_img_url)
     response.raise_for_status()
     with open('comic_img.png', 'wb') as file:
         file.write(response.content)
@@ -40,7 +36,7 @@ def get_wall_upload_server_vk(vk_token):
        'access_token': vk_token,
        'v': 5.131,
     }
-    response = requests.get(wall_upload_server_url, headers=HEADERS, params=params)
+    response = requests.get(wall_upload_server_url, params=params)
     response.raise_for_status()
     upload_url = response.json().get('response').get('upload_url')
     return upload_url
@@ -69,7 +65,7 @@ def save_wall_photo_vk(vk_token, photo, hash, server):
         'server': server,
         'v': 5.131,
     }
-    response = requests.post(save_wall_photo_url, headers=HEADERS, params=params)
+    response = requests.post(save_wall_photo_url, params=params)
     owner_id = response.json().get('response')[0].get('owner_id')
     media_id = response.json().get('response')[0].get('id')
     return owner_id, media_id
@@ -85,7 +81,7 @@ def post_wall_photo_vk(vk_token, owner_id, media_id, comment):
         'message': comment,
         'v': 5.131,
     }
-    requests.post(post_wall_photo_url, headers=HEADERS, params=params)
+    requests.post(post_wall_photo_url, params=params)
 
 
 if __name__ == '__main__':
