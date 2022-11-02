@@ -90,7 +90,7 @@ def post_wall_photo_vk(vk_token, group_id, owner_id, media_id, comment):
     params = {
         'access_token': vk_token,
         'owner_id': f'-{group_id}',
-        'from_group': group_id,
+        'from_group': 1,
         'attachments': f'photo{owner_id}_{media_id}',
         'message': comment,
         'v': 5.131,
