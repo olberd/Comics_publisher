@@ -25,7 +25,6 @@ def download_comics():
     response.raise_for_status()
     with open('comic_img.png', 'wb') as file:
         file.write(response.content)
-    # raise ValueError
     return comic_comment
 
 
